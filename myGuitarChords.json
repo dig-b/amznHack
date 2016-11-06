@@ -11,10 +11,10 @@ exports.handler = function( event, context ) {
     
     var dataset =
         [
-            {"Name":"C"},
-            {"Name":"G"},
-            {"Name":"A Minor"},
-            {"Name":"F,"}
+            {"Name":"C","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/2doea3tflz6a1mf/CMaj.mp3'/> </speak>"},
+            {"Name":"G","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/lg912czil4g08t1/G.mp3'/> </speak>"},
+            {"Name":"A Minor","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/psugtl01pcl7gzt/AMin.mp3'/> </speak>"},
+            {"Name":"F","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/lg912czil4g08t1/G.mp3'/> </speak>"}
         ];
 
     if (event.session.attributes) {
@@ -34,10 +34,9 @@ exports.handler = function( event, context ) {
                 
                 for (i = 0; i < dataset.length; i++) {
                     if (dataset[i].Name === chord) {
-                        chord = dataset[i].Name;
+                        say = dataset[i].address;
                     }
                 }
-                say = chord;
 
                 // add the state to a session.attributes array
                 if (!sessionAttributes.requestList) {
@@ -46,7 +45,9 @@ exports.handler = function( event, context ) {
                 sessionAttributes.requestList.push(chord);
             }
 
-        } else if (IntentName === "AMAZON.StopIntent" || IntentName === "AMAZON.CancelIntent") {
+        /*} else if (IntentName === "TuneGuitar") {
+            say = "___"
+        }*/} else if (IntentName === "AMAZON.StopIntent" || IntentName === "AMAZON.CancelIntent") {
             say = "Goodbye!";
             shouldEndSession = true;
         } else if (IntentName === "AMAZON.HelpIntent" ) {
@@ -60,7 +61,7 @@ function buildSpeechletResponse(say, shouldEndSession) {
     return {
         outputSpeech: {
             type: "SSML",
-            ssml: "<speak>" + say + "</speak>"
+            ssml: say
         },
         reprompt: {
             outputSpeech: {
