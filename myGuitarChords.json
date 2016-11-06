@@ -9,7 +9,7 @@ exports.handler = function( event, context ) {
 
     var shouldEndSession = false;
     var sessionAttributes = {};
-    var chord = "";
+    var chordFile = "";
     
     var dataset =
         [
@@ -25,8 +25,6 @@ exports.handler = function( event, context ) {
 
     if (event.request.type === "LaunchRequest") {
         say = "Welcome to guitar chords!  Ask me to play a chord.";
-        context.succeed({sessionAttributes: sessionAttributes, response: buildSpeechletResponse(say, shouldEndSession) });
-
     } else {
         var IntentName = event.request.intent.name;
 
@@ -36,44 +34,35 @@ exports.handler = function( event, context ) {
 
                 chord = event.request.intent.slots.TYPES_OF_CHORDS.value;
                 
+                for (i = 0; i < dataset.length; i++) {
+                    if (dataset[i].Name === myState) {
+                        chordFile = dataset[i].Name;
+                    }
+                }
+                say = chordFile;
 
-                            say = "The population of " + myState + " is " + pop;
-
-                            // add the state to a session.attributes array
-                            if (!sessionAttributes.requestList) {
-                                sessionAttributes.requestList = [];
-                            }
-                            sessionAttributes.requestList.push(myState);
-
-                            // This line concludes the lambda call.  Move this line to within any asynchronous callbacks that return and use data.
-                            context.succeed({sessionAttributes: sessionAttributes, response: buildSpeechletResponse(say, shouldEndSession) });
-
-                        });
-                      });
-                post_req.write(JSON.stringify(post_data));
-                post_req.end();
-
+                // add the state to a session.attributes array
+                if (!sessionAttributes.requestList) {
+                    sessionAttributes.requestList = [];
+                }
+                sessionAttributes.requestList.push(chord);
             }
 
         } else if (IntentName === "AMAZON.StopIntent" || IntentName === "AMAZON.CancelIntent") {
             say = "Goodbye!";
             shouldEndSession = true;
-            context.succeed({sessionAttributes: sessionAttributes, response: buildSpeechletResponse(say, shouldEndSession) });
-
-
         } else if (IntentName === "AMAZON.HelpIntent" ) {
             say = "Say the name of a guitar chord, such as C or E minor, and I'll play it."
-            context.succeed({sessionAttributes: sessionAttributes, response: buildSpeechletResponse(say, shouldEndSession) });
-
         }
     }
+    context.succeed({sessionAttributes: sessionAttributes, response: buildSpeechletResponse(say, shouldEndSession) });
 };
 
 function buildSpeechletResponse(say, shouldEndSession) {
     return {
         outputSpeech: {
             type: "SSML",
-            ssml: ___
+            ssml: "<speak>Here is the chord." + say + "</speak>"
         },
         reprompt: {
             outputSpeech: {
