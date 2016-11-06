@@ -8,13 +8,18 @@ exports.handler = function( event, context ) {
     var shouldEndSession = false;
     var sessionAttributes = {};
     var chord = "";
+    var chordFile = "";
+    
+    var strings = "<audio src = 'https://dl.dropboxusercontent.com/s/dai4t8ojruszzbs/Tuning.mp3'/>";
+    var progression = "<audio src = 'https://dl.dropboxusercontent.com/s/j51ac775nlazjxk/Progression.mp3'/>";
+    var dubstep = "<audio src = 'https://dl.dropboxusercontent.com/s/13fqjp11psj28nf/ProgressionWithDrums.mp3'/>";
     
     var dataset =
         [
-            {"Name":"C","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/2doea3tflz6a1mf/CMaj.mp3'/> </speak>"},
-            {"Name":"G","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/lg912czil4g08t1/G.mp3'/> </speak>"},
-            {"Name":"A Minor","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/psugtl01pcl7gzt/AMin.mp3'/> </speak>"},
-            {"Name":"F","address":"<speak> <audio src = 'https://dl.dropboxusercontent.com/s/lg912czil4g08t1/G.mp3'/> </speak>"}
+            {"Name":"c","address":"<audio src = 'https://dl.dropboxusercontent.com/s/2doea3tflz6a1mf/CMaj.mp3'/>"},
+            {"Name":"g","address":"<audio src = 'https://dl.dropboxusercontent.com/s/lg912czil4g08t1/G.mp3'/>"},
+            {"Name":"a minor","address":"<audio src = 'https://dl.dropboxusercontent.com/s/psugtl01pcl7gzt/AMin.mp3'/>"},
+            {"Name":"f","address":"<audio src = 'https://dl.dropboxusercontent.com/s/f36hpkr4y4lxagz/F.mp3'/>"}
         ];
 
     if (event.session.attributes) {
@@ -22,7 +27,7 @@ exports.handler = function( event, context ) {
     }
 
     if (event.request.type === "LaunchRequest") {
-        say = "Welcome to guitar chords!  Ask me to play a chord.";
+        say = "Welcome to guitar chords!  Ask me to play a chord or tune your guitar.";
     } else {
         var IntentName = event.request.intent.name;
 
@@ -44,10 +49,14 @@ exports.handler = function( event, context ) {
                 }
                 sessionAttributes.requestList.push(chord);
             }
-
-        /*} else if (IntentName === "TuneGuitar") {
-            say = "___"
-        }*/} else if (IntentName === "AMAZON.StopIntent" || IntentName === "AMAZON.CancelIntent") {
+            
+        } else if (IntentName == "DubstepIntent") {
+            say = dubstep;
+        } else if (IntentName === "ProgressionIntent") {
+            say = progression;
+        } else if (IntentName === "TuneIntent") {
+            say = strings;
+        } else if (IntentName === "AMAZON.StopIntent" || IntentName === "AMAZON.CancelIntent") {
             say = "Goodbye!";
             shouldEndSession = true;
         } else if (IntentName === "AMAZON.HelpIntent" ) {
