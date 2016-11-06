@@ -1,22 +1,20 @@
-'use strict';
 // This code sample shows how to call and receive external rest service data, within your skill Lambda code.
 
 // var AWS = require('aws-sdk');
-var https = require('https');
 
 exports.handler = function( event, context ) {
     var say = "";
 
     var shouldEndSession = false;
     var sessionAttributes = {};
-    var chordFile = "";
+    var chord = "";
     
     var dataset =
         [
-            {"Name":"C", "file":"},
-            {"Name":"G","file":},
-            {"Name":"A Minor", "file":},
-            {"Name":"F,","file":}
+            {"Name":"C"},
+            {"Name":"G"},
+            {"Name":"A Minor"},
+            {"Name":"F,"}
         ];
 
     if (event.session.attributes) {
@@ -30,16 +28,16 @@ exports.handler = function( event, context ) {
 
         if (IntentName === "GuitarChordIntent") {
 
-            if (event.request.intent.slots.TYPES_OF_CHORDS.value) {
+            if (event.request.intent.slots.chord.value) {
 
-                chord = event.request.intent.slots.TYPES_OF_CHORDS.value;
+                chord = event.request.intent.slots.chord.value;
                 
                 for (i = 0; i < dataset.length; i++) {
-                    if (dataset[i].Name === myState) {
-                        chordFile = dataset[i].Name;
+                    if (dataset[i].Name === chord) {
+                        chord = dataset[i].Name;
                     }
                 }
-                say = chordFile;
+                say = chord;
 
                 // add the state to a session.attributes array
                 if (!sessionAttributes.requestList) {
@@ -62,7 +60,7 @@ function buildSpeechletResponse(say, shouldEndSession) {
     return {
         outputSpeech: {
             type: "SSML",
-            ssml: "<speak>Here is the chord." + say + "</speak>"
+            ssml: "<speak>" + say + "</speak>"
         },
         reprompt: {
             outputSpeech: {
